@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RememberTheWord3.App
+namespace RememberTheWord3
 {
 	public enum AskWordsType
 	{

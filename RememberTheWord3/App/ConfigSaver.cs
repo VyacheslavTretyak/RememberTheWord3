@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RememberTheWord3.App
+namespace RememberTheWord3
 {
 	class ConfigSaver
 	{
@@ -13,31 +13,32 @@ namespace RememberTheWord3.App
 		private Dictionary<string, string> config;
 		public ConfigSaver()
 		{
-			config = new Dictionary<string, string>();
-			if (!File.Exists(fileName))
-			{
-				CreateConfigFile();
-			}
-			else
-			{
-				LoadConfig();
-			}
+
 		}
 
 		private void LoadConfig()
 		{
-			using (StreamReader sr = new StreamReader(fileName))
+			config = new Dictionary<string, string>();
+			if (!File.Exists(fileName))
 			{
-				while (sr.EndOfStream)
+				SetDefaultConfig();
+				SaveConfig();
+			}
+			else
+			{
+				using (StreamReader sr = new StreamReader(fileName))
 				{
-					string line = sr.ReadLine();
-					if(line.TrimStart()[0] == '#')
+					while (sr.EndOfStream)
 					{
-						continue;
+						string line = sr.ReadLine();
+						if (line.TrimStart()[0] == '#')
+						{
+							continue;
+						}
+						string[] keyVal = line.Split(":".ToCharArray());
+						config[keyVal[0]] = keyVal[1];
 					}
-					string[] keyVal= line.Split(":".ToCharArray());
-					config[keyVal[0]] = keyVal[1];
-				}				
+				}
 			}
 		}
 
@@ -55,21 +56,19 @@ namespace RememberTheWord3.App
 			config["autorun"] = "1";
 		}
 
-		private void CreateConfigFile()
+		public void SaveConfig()
 		{
-			// Create the file.
-			SetDefaultConfig();
 			using (StreamWriter sw = File.CreateText(fileName))
-			{				
-				foreach(var pair in config)
+			{
+				foreach (var pair in config)
 				{
-					if(pair.Key == "ask")
+					if (pair.Key == "ask")
 					{
 						sw.WriteLine($"# 0 - Word, 1 - Translate, 2 - Both");
 					}
 					sw.WriteLine($"{pair.Key}:{pair.Value}");
-				}				
+				}
 			}
-		}		
+		}
 	}
 }

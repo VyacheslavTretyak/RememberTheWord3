@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace RememberTheWords3
+namespace RememberTheWord3
 {
 	public partial class MainWindow : Window
 	{
@@ -25,9 +25,8 @@ namespace RememberTheWords3
 		private Task task;
 		private Thread thread;
 		public bool IsEdit { get; set; } = false;
-		public string OldWord { get; set; }
-		public string OldTranslate { get; set; }
-		private DataManager dataManager;
+		private string oldWord;
+		private string oldTranslate;		
 		private bool isClosed = false;
 		public MainWindow()
 		{
@@ -50,16 +49,12 @@ namespace RememberTheWords3
 
 
 			//load settings
-			RegistryManager registryManager = new RegistryManager();
-			settings = registryManager.GetSetings();
-			if (settings["autoRun"].ToLower() == "true")
-			{
-				registryManager.AutoRunSet();
-			}
+			Configurator configurator = Configurator.GetInstance();
+			configurator.GetConfig();
 			//notifyIcon
 			notifyIcon = new System.Windows.Forms.NotifyIcon();
 			notifyIcon.Visible = true;
-			var icon = RememberTheWords.Properties.Resources.icon1.GetHicon();
+			var icon = RememberTheWord3.Properties.Resources.icon1.GetHicon();
 			notifyIcon.Icon = System.Drawing.Icon.FromHandle(icon);
 			notifyIcon.MouseClick += NotifyIcon_MouseClick;
 			//contextMenu
@@ -84,16 +79,7 @@ namespace RememberTheWords3
 			item.Header = "EXIT";
 			contextMenu.Items.Add(item);
 			//Start
-			task = Task.Run(() => NextWord());
-			//load data
-			try
-			{
-				dataManager = DataManager.GetInstance();
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show(ex.Message);
-			}
+			task = Task.Run(() => NextWord());			
 		}
 
 		private void ButtonRollback_Click(object sender, RoutedEventArgs e)
@@ -241,7 +227,7 @@ namespace RememberTheWords3
 			WordSet word = new WordSet();
 			if (IsEdit)
 			{
-				word = dataManager.Edit(TextBoxWord.Text, TextBoxTranslate.Text, OldWord, OldTranslate);
+				word = dataManager.Edit(TextBoxWord.Text, TextBoxTranslate.Text, oldWord, oldTranslate);
 				word.WaitSeconds = 0;
 			}
 			else

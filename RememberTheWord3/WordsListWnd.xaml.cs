@@ -67,8 +67,8 @@ namespace RememberTheWords3
 			ParentWindow.TextBoxWord.Text = word;
 			ParentWindow.TextBoxTranslate.Text = translate;
 			ParentWindow.IsEdit = true;
-			ParentWindow.OldWord = word;
-			ParentWindow.OldTranslate = translate;
+			ParentWindow.oldWord = word;
+			ParentWindow.oldTranslate = translate;
 			Close();
 		}
 

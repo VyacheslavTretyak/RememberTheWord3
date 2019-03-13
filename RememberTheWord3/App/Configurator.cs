@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RememberTheWord3.App
+namespace RememberTheWord3
 {
 	class Configurator
 	{
@@ -20,11 +20,15 @@ namespace RememberTheWord3.App
 		private ConfigSaver saver;
 		private Configurator()
 		{
-			saver = new ConfigSaver();
-			GetConfig();
+			saver = new ConfigSaver();			
 		}
 
-		private void GetConfig()
+		public void SaveConfig()
+		{
+			saver.SaveConfig();
+		}
+
+		public void GetConfig()
 		{
 			Dictionary<string, string> config = saver.GetConfig();
 			Hours = int.Parse(config["hours"]);
@@ -32,6 +36,14 @@ namespace RememberTheWord3.App
 			Weeks = int.Parse(config["weeks"]);
 			AutoRun = bool.Parse(config["autorun"]);
 			AskWords = (AskWordsType)int.Parse(config["ask"]);
+			if (AutoRun)
+			{
+				AutoRunSet();
+			}
+			else
+			{
+				AutoRunUnset();
+			}
 		}
 
 		public static Configurator GetInstance()
