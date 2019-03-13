@@ -62,6 +62,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="App\AskWordsType.cs" />
+    <Compile Include="App\ConfigSaver.cs" />
+    <Compile Include="App\Configurator.cs" />
     <Compile Include="SettingsWnd.xaml.cs">
       <DependentUpon>SettingsWnd.xaml</DependentUpon>
     </Compile>
@@ -127,8 +130,6 @@
     <Resource Include="Icon1.ico" />
     <Resource Include="icon1.PNG" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
