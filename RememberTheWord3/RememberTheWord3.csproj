@@ -66,6 +66,9 @@
     <Compile Include="App\AskWordsType.cs" />
     <Compile Include="App\ConfigSaver.cs" />
     <Compile Include="App\Configurator.cs" />
+    <Compile Include="App\Controller.cs" />
+    <Compile Include="App\DataFile.cs" />
+    <Compile Include="App\Word.cs" />
     <Compile Include="SettingsWnd.xaml.cs">
       <DependentUpon>SettingsWnd.xaml</DependentUpon>
     </Compile>
