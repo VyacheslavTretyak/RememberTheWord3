@@ -24,8 +24,7 @@ namespace RememberTheWord3
 		private Task task;
 		private Thread thread;
 		public bool IsEdit { get; set; } = false;
-		private string oldWord;
-		private string oldTranslate;		
+		private int currentWordId;
 		private bool isClosed = false;
 
 		private Controller controller;
@@ -99,6 +98,7 @@ namespace RememberTheWord3
 				if (word == null)
 				{
 					MessageBox.Show("No more words");
+					thread = null;
 					return;
 				}
 				if (word.WaitSeconds != 0)
@@ -112,33 +112,33 @@ namespace RememberTheWord3
 			}
 
 		}
-		public void WordShow(WordSet word)
+		public void WordShow(Word word)
 		{
-			WordShowing wordShowingWindow = new WordShowing();
-			bool flag = false;
-			if (settings["ask"] == AskWords.Word.ToString())
+			WordShowingWnd wordShowingWindow = new WordShowingWnd();
+			bool showOrigin = true;
+			if (controller.Configurator.AskWords == AskWordsType.Translate)
 			{
-				flag = true;
+				showOrigin = false;
 			}
-			else if (settings["ask"] == AskWords.Both.ToString())
+			else if (controller.Configurator.AskWords == AskWordsType.Both)
 			{
 				Random rnd = new Random();
-				flag = rnd.Next(0, 2) == 1;
+				showOrigin = rnd.Next(0, 2) == 1;
 			}
-			if (flag)
+			if (showOrigin)
 			{
-				wordShowingWindow.TextBlockWord.Text = word.Word;
+				wordShowingWindow.TextBlockWord.Text = word.Origin;
 				wordShowingWindow.TextBlockTranslate.Text = word.Translate;
 			}
 			else
 			{
 				wordShowingWindow.TextBlockWord.Text = word.Translate;
-				wordShowingWindow.TextBlockTranslate.Text = word.Word;
+				wordShowingWindow.TextBlockTranslate.Text = word.Origin;
 			}
 			wordShowingWindow.Top = System.Windows.SystemParameters.WorkArea.Height - wordShowingWindow.Height;
 			wordShowingWindow.Left = System.Windows.SystemParameters.WorkArea.Width - wordShowingWindow.Width;
 			wordShowingWindow.ShowDialog();
-			dataManager.UpdateWord(word);
+			controller.Repository.Update(word);			
 		}
 
 		private void ButtonList_Click(object sender, RoutedEventArgs e)
@@ -212,7 +212,7 @@ namespace RememberTheWord3
 		private void ButtonShow_Click(object sender, RoutedEventArgs e)
 		{
 			thread.Abort();
-			WordSet word = dataManager.NextWord(settings);
+			Word word = controller.NextWord();
 			WordShow(word);
 			task = Task.Run(() => NextWord());
 		}
@@ -225,16 +225,17 @@ namespace RememberTheWord3
 		private void BtnAddWord_Click(object sender, RoutedEventArgs e)
 		{
 			thread.Abort();
-			WordSet word = new WordSet();
+			Word word = new Word();
 			if (IsEdit)
 			{
-				word = dataManager.Edit(TextBoxWord.Text, TextBoxTranslate.Text, oldWord, oldTranslate);
-				word.WaitSeconds = 0;
+				controller.Edit(TextBoxWord.Text, TextBoxTranslate.Text, currentWordId);
+				IsEdit = false;
 			}
 			else
 			{
-				word = dataManager.Add(TextBoxWord.Text, TextBoxTranslate.Text);
+				word = controller.Add(TextBoxWord.Text, TextBoxTranslate.Text);
 				word.WaitSeconds = 0;
+				word.Id = controller.Repository.LastId() + 1;
 			}
 			WordShow(word);
 			TextBoxWord.Text = "";

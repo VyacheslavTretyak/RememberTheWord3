@@ -13,6 +13,7 @@ namespace RememberTheWord3
 		private DataFile dataFile;		
 		public Repository Repository { get; set; }
 		public Configurator Configurator { get; set; }
+		
 
 		public static Controller GetInstance()
 		{
@@ -34,12 +35,18 @@ namespace RememberTheWord3
 		{
 			try
 			{
-				Repository.Words = dataFile.LoadLastFile();
+				Repository.Words = dataFile.LoadLastFile();					
 			}
 			catch(Exception ex)
 			{
 				MessageBox.Show(ex.Message);
 			}
+
+		}
+
+		public void EditWord(string newOrigin, string newTranslate, int id)
+		{
+			Repository.
 
 		}
 

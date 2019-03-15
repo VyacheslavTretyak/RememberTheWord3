@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace RememberTheWord3
 {
-	class Word
+	internal class Word
 	{
 		public static string spliter = ";";
-		public static string formatInWord = "dd.MM.yyyy HH:mm:ss";
-
+		public static string formatInWord = "dd.MM.yyyy HH:mm:ss";		
 		public int Id { get; set; }
 		public string Origin{ get; set; }
 		public string Translate { get; set; }
