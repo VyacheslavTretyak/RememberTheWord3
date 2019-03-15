@@ -68,6 +68,7 @@
     <Compile Include="App\Configurator.cs" />
     <Compile Include="App\Controller.cs" />
     <Compile Include="App\DataFile.cs" />
+    <Compile Include="App\Repository.cs" />
     <Compile Include="App\Word.cs" />
     <Compile Include="SettingsWnd.xaml.cs">
       <DependentUpon>SettingsWnd.xaml</DependentUpon>

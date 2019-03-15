@@ -20,14 +20,15 @@ namespace RememberTheWord3
 	{
 		//TODO About
 		private System.Windows.Forms.NotifyIcon notifyIcon;
-		private ContextMenu contextMenu;
-		public Dictionary<string, string> settings;
+		private ContextMenu contextMenu;		
 		private Task task;
 		private Thread thread;
 		public bool IsEdit { get; set; } = false;
 		private string oldWord;
 		private string oldTranslate;		
 		private bool isClosed = false;
+
+		private Controller controller;
 		public MainWindow()
 		{
 			InitializeComponent();
@@ -49,8 +50,8 @@ namespace RememberTheWord3
 
 
 			//load settings
-			Configurator configurator = Configurator.GetInstance();
-			configurator.GetConfig();
+			controller = Controller.GetInstance();
+			controller.Configurator.GetConfig();
 			//notifyIcon
 			notifyIcon = new System.Windows.Forms.NotifyIcon();
 			notifyIcon.Visible = true;
@@ -94,7 +95,7 @@ namespace RememberTheWord3
 			thread = Thread.CurrentThread;
 			while (true)
 			{
-				WordSet word = dataManager.NextWord(settings);
+				Word word = controller.NextWord();
 				if (word == null)
 				{
 					MessageBox.Show("No more words");

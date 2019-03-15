@@ -15,10 +15,8 @@ namespace RememberTheWord3
 		public int Weeks { get; set; }
 		public bool AutoRun { get; set; }
 		private string appName = "RememberTheWord3";
-
-		private static Configurator instance = null;
 		private ConfigSaver saver;
-		private Configurator()
+		public Configurator()
 		{
 			saver = new ConfigSaver();			
 		}
@@ -44,16 +42,7 @@ namespace RememberTheWord3
 			{
 				AutoRunUnset();
 			}
-		}
-
-		public static Configurator GetInstance()
-		{
-			if(instance == null)
-			{
-				instance = new Configurator();
-			}
-			return instance;
-		}
+		}	
 
 		public void AutoRunSet()
 		{
