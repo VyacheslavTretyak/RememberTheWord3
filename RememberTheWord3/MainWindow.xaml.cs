@@ -24,7 +24,7 @@ namespace RememberTheWord3
 		private Task task;
 		private Thread thread;
 		public bool IsEdit { get; set; } = false;
-		private int currentWordId;
+		public Word EditingWord { get; set; }
 		private bool isClosed = false;
 
 		private Controller controller;
@@ -80,14 +80,7 @@ namespace RememberTheWord3
 			contextMenu.Items.Add(item);
 			//Start
 			task = Task.Run(() => NextWord());			
-		}
-
-		private void ButtonRollback_Click(object sender, RoutedEventArgs e)
-		{
-			thread.Abort();
-			dataManager.RollBack();
-			task = Task.Run(() => NextWord());
-		}
+		}		
 
 		private void NextWord()
 		{
@@ -138,23 +131,32 @@ namespace RememberTheWord3
 			wordShowingWindow.Top = System.Windows.SystemParameters.WorkArea.Height - wordShowingWindow.Height;
 			wordShowingWindow.Left = System.Windows.SystemParameters.WorkArea.Width - wordShowingWindow.Width;
 			wordShowingWindow.ShowDialog();
+			word.TimeShow = DateTime.Now;
+			word.CountShow++;
 			controller.Repository.Update(word);			
+		}
+
+		private void ButtonRollback_Click(object sender, RoutedEventArgs e)
+		{
+			thread.Abort();
+			controller.RollBack();
+			task = Task.Run(() => NextWord());
 		}
 
 		private void ButtonList_Click(object sender, RoutedEventArgs e)
 		{
 			Hide();
-			Words wordsWindow = new Words();
+			WordListWnd wordsWindow = new WordListWnd();
 			wordsWindow.ParentWindow = this;
 			wordsWindow.Top = System.Windows.SystemParameters.WorkArea.Height - wordsWindow.Height;
 			wordsWindow.Left = System.Windows.SystemParameters.WorkArea.Width - wordsWindow.Width;
 			wordsWindow.ShowDialog();
 			thread.Abort();
 			task = Task.Run(() => NextWord());
-			if (!isClosed)
-			{
-				Show();
-			}
+			//if (!isClosed)
+			//{
+			//	Show();
+			//}
 		}
 
 		private void ButtonSettings_Click(object sender, RoutedEventArgs e)
@@ -200,7 +202,7 @@ namespace RememberTheWord3
 		private void MainWindow_Closed(object sender, EventArgs e)
 		{
 			isClosed = true;
-			dataManager.SaveChanges();
+			controller.SaveData();
 			notifyIcon?.Dispose();
 		}
 		private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -225,19 +227,20 @@ namespace RememberTheWord3
 		private void BtnAddWord_Click(object sender, RoutedEventArgs e)
 		{
 			thread.Abort();
-			Word word = new Word();
+			Word newWord = new Word();
+			newWord.Origin = TextBoxWord.Text;
+			newWord.Translate = TextBoxTranslate.Text;
 			if (IsEdit)
-			{
-				controller.Edit(TextBoxWord.Text, TextBoxTranslate.Text, currentWordId);
+			{				
+				newWord = controller.EditWord(EditingWord, newWord);				
 				IsEdit = false;
 			}
 			else
-			{
-				word = controller.Add(TextBoxWord.Text, TextBoxTranslate.Text);
-				word.WaitSeconds = 0;
-				word.Id = controller.Repository.LastId() + 1;
+			{						
+				controller.Repository.Add(newWord);
+
 			}
-			WordShow(word);
+			WordShow(newWord);
 			TextBoxWord.Text = "";
 			TextBoxTranslate.Text = "";
 			task = Task.Run(() => NextWord());

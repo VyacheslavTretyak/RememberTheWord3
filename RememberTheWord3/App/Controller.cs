@@ -44,10 +44,19 @@ namespace RememberTheWord3
 
 		}
 
-		public void EditWord(string newOrigin, string newTranslate, int id)
+		public void ResetCount(int id)
 		{
-			Repository.
+			Word word = Repository.Get(id);
+			word.CountShow = 0;
+			Repository.Update(word);
+		}
 
+		public Word EditWord(Word editingWord, Word newWord)
+		{
+			editingWord.Origin = newWord.Origin;
+			editingWord.Translate = newWord.Translate;
+			Repository.Update(editingWord);
+			return editingWord;
 		}
 
 		public Word NextWord()
@@ -154,6 +163,16 @@ namespace RememberTheWord3
 				return found;
 			}
 			return null;
+		}
+
+		public void RollBack()
+		{
+			Repository.Words = dataFile.RollBack();
+		}
+
+		public void SaveData()
+		{
+			dataFile.Save(Repository.Words);
 		}
 	}
 }

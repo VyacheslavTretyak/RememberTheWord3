@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RememberTheWord3
 {
-	internal class Word
+	public class Word
 	{
 		public static string spliter = ";";
 		public static string formatInWord = "dd.MM.yyyy HH:mm:ss";		
@@ -15,8 +15,14 @@ namespace RememberTheWord3
 		public string Translate { get; set; }
 		public DateTime TimeShow { get; set; }
 		public DateTime TimeCreate { get; set; }
-		public int CountShow { get; set; }
-		public double WaitSeconds { get; set; }
+		public int CountShow { get; set; } = 0;
+		public double WaitSeconds { get; set; } = 0;
+
+		public Word()
+		{
+			TimeCreate = DateTime.Now;
+			TimeShow = DateTime.Now;
+		}
 
 		
 		public string ToLine()

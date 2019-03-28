@@ -25,7 +25,7 @@ namespace RememberTheWord3
 			Words.Add(word);
 		}
 
-		internal void Update(Word word)
+		public void Update(Word word)
 		{
 			var found = Words.FirstOrDefault(w => w.Id == word.Id);
 			if(found == null)
@@ -35,6 +35,17 @@ namespace RememberTheWord3
 			}
 			//TODO перевірити оновлення даних
 			found = word;
+		}
+
+		public void Delete(Word word)
+		{
+			var found = Words.FirstOrDefault(w => w.Id == word.Id);
+			if (found == null)
+			{
+				MessageBox.Show($"Word ID {word.Id} not found!");
+				return;
+			}
+			Words.Remove(found);
 		}
 	}
 }

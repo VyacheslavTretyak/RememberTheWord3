@@ -12,17 +12,17 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace RememberTheWords3
+namespace RememberTheWord3
 {
-	public partial class Words : Window
+	public partial class WordListWnd : Window
 	{
-		public List<WordSet> wordsList;
+		public List<Word> wordsList;
 		public MainWindow ParentWindow { get; set; }
-		private DataManager dataManager;
-		public Words()
+		private Controller controller;
+		public WordListWnd()
 		{
 			InitializeComponent();
-			dataManager = DataManager.GetInstance();
+			controller = Controller.GetInstance();
 			GetList();
 			ContextMenu contextMenu = new ContextMenu();
 			MenuItem item = new MenuItem();
@@ -50,34 +50,31 @@ namespace RememberTheWords3
 
 		private void ItemShow_Click(object sender, RoutedEventArgs e)
 		{
-			var item = DataGridWords.SelectedItem;
-			string word = item.GetType().GetProperty("Word").GetValue(item).ToString();
-			string translate = item.GetType().GetProperty("Translate").GetValue(item).ToString();
-
-			WordSet nextWord = Task<WordSet>.Run(() => dataManager.GetWord(word, translate)).Result;
+			int id = GetSelectedId();
+			Word nextWord = Task<Word>.Run(() => controller.Repository.Get(id)).Result;
+			
 			ParentWindow.WordShow(nextWord);
 			GetList();
 		}
-
-		private void ItemEdit_Click(object sender, RoutedEventArgs e)
+		private int GetSelectedId()
 		{
 			var item = DataGridWords.SelectedItem;
-			string word = item.GetType().GetProperty("Word").GetValue(item).ToString();
-			string translate = item.GetType().GetProperty("Translate").GetValue(item).ToString();
-			ParentWindow.TextBoxWord.Text = word;
-			ParentWindow.TextBoxTranslate.Text = translate;
+			return int.Parse(item.GetType().GetProperty("Id").GetValue(item).ToString());
+		}
+
+		private void ItemEdit_Click(object sender, RoutedEventArgs e)
+		{			
+			Word selectedWord = controller.Repository.Get(GetSelectedId());
+			ParentWindow.TextBoxWord.Text = selectedWord.Origin;
+			ParentWindow.TextBoxTranslate.Text = selectedWord.Translate;
 			ParentWindow.IsEdit = true;
-			ParentWindow.oldWord = word;
-			ParentWindow.oldTranslate = translate;
+			ParentWindow.EditingWord = selectedWord;			
 			Close();
 		}
 
 		private void ItemReset_Click(object sender, RoutedEventArgs e)
 		{
-			var item = DataGridWords.SelectedItem;
-			string word = item.GetType().GetProperty("Word").GetValue(item).ToString();
-			string translate = item.GetType().GetProperty("Translate").GetValue(item).ToString();
-			Task.Run(() => dataManager.CountReset(word, translate));
+			controller.ResetCount(GetSelectedId());
 			GetList();
 		}
 
@@ -95,10 +92,10 @@ namespace RememberTheWords3
 			DataGridWords.ItemsSource = null;
 			Task.Run(() =>
 			{
-				var list = dataManager.GetWordsList();
+				var list = controller.Repository.Words;
 				Dispatcher.Invoke(() =>
 				{
-					DataGridWords.ItemsSource = list.Select(a => new { a.Word, a.Translate, a.CountShow, a.TimeShow, a.TimeCreate });
+					DataGridWords.ItemsSource = list.Select(a => new { a.Origin, a.Translate, a.CountShow, a.TimeShow, a.TimeCreate });
 				});
 			});
 		}
