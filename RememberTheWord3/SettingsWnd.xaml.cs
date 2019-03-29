@@ -24,7 +24,7 @@ namespace RememberTheWord3
 			ButtonOk.Click += ButtonOk_Click;
 			foreach (var AskWords in (AskWordsType[])Enum.GetValues(typeof(AskWordsType)))
 			{
-				ComboBoxAsk.Items.Add(AskWords.ToString());
+				ComboBoxAsk.Items.Add(AskWords);
 			}
 		}
 
@@ -33,16 +33,16 @@ namespace RememberTheWord3
 			DialogResult = true;
 		}
 
-		public bool ShowDialog(ref Dictionary<string, string> pairs)
+		public new bool ShowDialog()
 		{
 			Controller controller = Controller.GetInstance();
 			var config = controller.Configurator;
 			TextBoxDays.Text = config.Days.ToString();
 			TextBoxHours.Text = config.Hours.ToString();
 			TextBoxWeeks.Text = config.Weeks.ToString();
-			ComboBoxAsk.SelectedValue = config.AskWords.ToString();
+			ComboBoxAsk.SelectedValue = config.AskWords;
 			ToggleButtonAutoRun.IsChecked = config.AutoRun;
-			bool res = ShowDialog() ?? false;
+			bool res = base.ShowDialog()??false;
 			if (res)
 			{
 				config.Days = int.Parse(TextBoxDays.Text);
