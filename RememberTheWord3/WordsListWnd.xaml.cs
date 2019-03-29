@@ -93,7 +93,7 @@ namespace RememberTheWord3
 				var list = controller.Repository.Words;
 				Dispatcher.Invoke(() =>
 				{
-					DataGridWords.ItemsSource = list.Select(a => new { a.Origin, a.Translate, a.CountShow, a.TimeShow, a.TimeCreate });
+					DataGridWords.ItemsSource = list.Select(a => new { a.Origin, a.Translate, a.CountShow, a.TimeShow, a.TimeCreate, a.Id});
 				});
 			});
 		}

@@ -138,7 +138,7 @@ namespace RememberTheWord3
 
 		private void ButtonRollback_Click(object sender, RoutedEventArgs e)
 		{
-			thread.Abort();
+			thread?.Abort();
 			controller.RollBack();
 			task = Task.Run(() => NextWord());
 		}
@@ -151,7 +151,7 @@ namespace RememberTheWord3
 			wordsWindow.Top = System.Windows.SystemParameters.WorkArea.Height - wordsWindow.Height;
 			wordsWindow.Left = System.Windows.SystemParameters.WorkArea.Width - wordsWindow.Width;
 			wordsWindow.ShowDialog();
-			thread.Abort();
+			thread?.Abort();
 			task = Task.Run(() => NextWord());
 			//if (!isClosed)
 			//{
@@ -207,13 +207,14 @@ namespace RememberTheWord3
 		}
 		private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
+			thread?.Abort();
 			e.Cancel = true;
 			Hide();
 		}
 
 		private void ButtonShow_Click(object sender, RoutedEventArgs e)
 		{
-			thread.Abort();
+			thread?.Abort();
 			Word word = controller.NextWord();
 			WordShow(word);
 			task = Task.Run(() => NextWord());
@@ -226,7 +227,7 @@ namespace RememberTheWord3
 
 		private void BtnAddWord_Click(object sender, RoutedEventArgs e)
 		{
-			thread.Abort();
+			thread?.Abort();
 			Word newWord = new Word();
 			newWord.Origin = TextBoxWord.Text;
 			newWord.Translate = TextBoxTranslate.Text;

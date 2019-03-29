@@ -9,8 +9,8 @@ namespace RememberTheWord3
 	public class Word
 	{
 		public static string spliter = ";";
-		public static string formatInWord = "dd.MM.yyyy HH:mm:ss";		
-		public int Id { get; set; }
+		public static string formatInWord = "dd.MM.yyyy HH:mm:ss";
+		public int Id { get; set; } = 0;
 		public string Origin{ get; set; }
 		public string Translate { get; set; }
 		public DateTime TimeShow { get; set; }
@@ -28,6 +28,8 @@ namespace RememberTheWord3
 		public string ToLine()
 		{
 			StringBuilder stringBuilder = new StringBuilder();
+			stringBuilder.Append(Id);
+			stringBuilder.Append(spliter);
 			stringBuilder.Append(Origin);
 			stringBuilder.Append(spliter);
 			stringBuilder.Append(Translate);

@@ -35,7 +35,14 @@ namespace RememberTheWord3
 		{
 			try
 			{
-				Repository.Words = dataFile.LoadLastFile();					
+				Repository.Words = dataFile.LoadLastFile();
+				foreach(Word word in Repository.Words)
+				{
+					if (word.Id == 0)
+					{
+						word.Id = Repository.LastId() + 1;
+					}
+				}
 			}
 			catch(Exception ex)
 			{
@@ -172,7 +179,11 @@ namespace RememberTheWord3
 
 		public void RollBack()
 		{
-			Repository.Words = dataFile.RollBack();
+			var result = dataFile.RollBack();
+			if(result != null)
+			{
+				Repository.Words = result;
+			}
 		}
 
 		public void SaveData()

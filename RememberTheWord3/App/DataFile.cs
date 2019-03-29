@@ -13,12 +13,12 @@ namespace RememberTheWord3
 		//TODO винести властивості в config
 		private string directoryName = "data";
 		private string fileName = "words";
-		private string fileExtension = "dat";
+		private string fileExtension = "wrd";
 		private string formatInFile = "yyyy_MM_dd_HH_mm_ss";
 		private int maxCountFiles = 20;
 
 		public List<Word> LoadLastFile()
-		{			
+		{
 			FileInfo fi = new FileInfo(directoryName);
 			if (!fi.Exists)
 			{
@@ -47,7 +47,7 @@ namespace RememberTheWord3
 					newest = dateTime;
 				}
 			}
-			return ReadData(newestFile.FullName);			
+			return ReadData(newestFile.FullName);
 		}
 
 		private List<Word> ReadData(string fileName)
@@ -59,17 +59,20 @@ namespace RememberTheWord3
 				while (!sr.EndOfStream)
 				{
 					string[] line = sr.ReadLine().Split(Word.spliter.ToCharArray());
-					Word word = new Word()
+					int n = 0;
+					Word word = new Word();
+					if (line.Length == 6)
 					{
-						Origin = line[0],
-						Translate = line[1],
-						CountShow = int.Parse(line[2]),
-						TimeShow = DateTime.ParseExact(line[3], Word.formatInWord, System.Globalization.CultureInfo.InvariantCulture),
-						TimeCreate = DateTime.ParseExact(line[4], Word.formatInWord, System.Globalization.CultureInfo.InvariantCulture)
-					};
+						word.Id = int.Parse(line[n++]);
+					}
+					word.Origin = line[n++];
+					word.Translate = line[n++];
+					word.CountShow = int.Parse(line[n++]);
+					word.TimeShow = DateTime.ParseExact(line[n++], Word.formatInWord, System.Globalization.CultureInfo.InvariantCulture);
+					word.TimeCreate = DateTime.ParseExact(line[n++], Word.formatInWord, System.Globalization.CultureInfo.InvariantCulture);
 					words.Add(word);
-				}				
-			}			
+				}
+			}
 			return words;
 		}
 
@@ -80,15 +83,15 @@ namespace RememberTheWord3
 			fileDialog.InitialDirectory = info.FullName;
 			if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 			{
-				return ReadData(fileDialog.FileName);				
+				return ReadData(fileDialog.FileName);
 			}
-			return new List<Word>();
-		}		
+			return null;
+		}
 
 		public void Save(List<Word> words)
 		{
 			string time = DateTime.Now.ToString(formatInFile);
-			string fullpath = $"{directoryName}\\{fileName}__{time}.wrd";
+			string fullpath = $"{directoryName}\\{fileName}__{time}.{fileExtension}";
 			using (StreamWriter streamWriter = new StreamWriter(fullpath))
 			{
 				foreach (var row in words)

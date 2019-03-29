@@ -36,9 +36,13 @@
 			HorizontalAlignment="Right" Margin="8">
 							<materialDesign:PackIcon Kind="Help" Height="14" Width="14" />
 						</Button>
-						<TextBlock Name="TextBlockWord"
-							Margin="20" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center"
-			TextWrapping="Wrap">Word</TextBlock>
+						<TextBlock 
+							Name="TextBlockWord"
+							Margin="20" 
+							FontSize="24"
+							HorizontalAlignment="Center"
+							VerticalAlignment="Center"
+							TextWrapping="Wrap">Word</TextBlock>
 					</StackPanel>
 				</materialDesign:Card>
 			</materialDesign:Flipper.FrontContent>
@@ -47,7 +51,13 @@
 					Background="{DynamicResource PrimaryHueDarkBrush}"
 					Foreground="{DynamicResource PrimaryHueLightForegroundBrush}"
 					Width="300" Height="180">
-					<TextBlock Name="TextBlockTranslate" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center">Translate</TextBlock>
+					<TextBlock 
+						Name="TextBlockTranslate" 
+						Margin="20" 
+						FontSize="24" 
+						HorizontalAlignment="Center"
+						VerticalAlignment="Center"
+						TextWrapping="Wrap">Translate</TextBlock>
 				</materialDesign:Card>
 			</materialDesign:Flipper.BackContent>
 		</materialDesign:Flipper>
