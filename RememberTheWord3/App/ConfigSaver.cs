@@ -13,10 +13,10 @@ namespace RememberTheWord3
 		private Dictionary<string, string> config;
 		public ConfigSaver()
 		{
-
+			config = new Dictionary<string, string>();
 		}
 
-		private void LoadConfig()
+		public void LoadConfig()
 		{
 			config = new Dictionary<string, string>();
 			if (!File.Exists(fileName))
@@ -28,7 +28,7 @@ namespace RememberTheWord3
 			{
 				using (StreamReader sr = new StreamReader(fileName))
 				{
-					while (sr.EndOfStream)
+					while (!sr.EndOfStream)
 					{
 						string line = sr.ReadLine();
 						if (line.TrimStart()[0] == '#')

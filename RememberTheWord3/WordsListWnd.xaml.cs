@@ -80,10 +80,8 @@ namespace RememberTheWord3
 
 		private void ItemDelete_Click(object sender, RoutedEventArgs e)
 		{
-			var item = DataGridWords.SelectedItem;
-			string word = item.GetType().GetProperty("Word").GetValue(item).ToString();
-			string translate = item.GetType().GetProperty("Translate").GetValue(item).ToString();
-			Task.Run(() => dataManager.DeleteRow(word, translate));
+			Word selectedWord = controller.Repository.Get(GetSelectedId());
+			Task.Run(() => controller.DeleteWord(selectedWord));
 			GetList();
 		}
 

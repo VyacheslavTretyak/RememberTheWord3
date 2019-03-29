@@ -18,7 +18,8 @@ namespace RememberTheWord3
 		private ConfigSaver saver;
 		public Configurator()
 		{
-			saver = new ConfigSaver();			
+			saver = new ConfigSaver();
+			saver.LoadConfig();
 		}
 
 		public void SaveConfig()
@@ -32,7 +33,7 @@ namespace RememberTheWord3
 			Hours = int.Parse(config["hours"]);
 			Days= int.Parse(config["days"]);
 			Weeks = int.Parse(config["weeks"]);
-			AutoRun = bool.Parse(config["autorun"]);
+			AutoRun = config["autorun"] == "1";
 			AskWords = (AskWordsType)int.Parse(config["ask"]);
 			if (AutoRun)
 			{

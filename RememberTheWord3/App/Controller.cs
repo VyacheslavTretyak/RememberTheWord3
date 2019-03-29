@@ -59,6 +59,11 @@ namespace RememberTheWord3
 			return editingWord;
 		}
 
+		public void DeleteWord(Word deletingWord)
+		{
+			Repository.Delete(deletingWord);			
+		}
+
 		public Word NextWord()
 		{			
 			DateTime now = DateTime.Now;
