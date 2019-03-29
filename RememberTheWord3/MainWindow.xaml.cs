@@ -162,10 +162,10 @@ namespace RememberTheWord3
 		private void ButtonSettings_Click(object sender, RoutedEventArgs e)
 		{
 			Hide();
-			Settings settingsWindow = new Settings();
+			SettingsWnd settingsWindow = new SettingsWnd();
 			settingsWindow.Top = System.Windows.SystemParameters.WorkArea.Height - settingsWindow.Height;
 			settingsWindow.Left = System.Windows.SystemParameters.WorkArea.Width - settingsWindow.Width;
-			settingsWindow.ShowDialog(ref settings);
+			settingsWindow.ShowDialog();
 			if (!isClosed)
 			{
 				Show();

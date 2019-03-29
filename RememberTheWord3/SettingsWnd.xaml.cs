@@ -13,16 +13,16 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace RememberTheWords3
+namespace RememberTheWord3
 {
-	public partial class Settings : Window
+	public partial class SettingsWnd : Window
 	{
-		public Settings()
+		public SettingsWnd()
 		{
 			InitializeComponent();
 			ButtonCancel.Click += ButtonCancel_Click;
 			ButtonOk.Click += ButtonOk_Click;
-			foreach (var AskWords in (AskWords[])Enum.GetValues(typeof(AskWords)))
+			foreach (var AskWords in (AskWordsType[])Enum.GetValues(typeof(AskWordsType)))
 			{
 				ComboBoxAsk.Items.Add(AskWords.ToString());
 			}
@@ -35,21 +35,22 @@ namespace RememberTheWords3
 
 		public bool ShowDialog(ref Dictionary<string, string> pairs)
 		{
-			TextBoxDays.Text = pairs["days"];
-			TextBoxHours.Text = pairs["hours"];
-			TextBoxWeeks.Text = pairs["weeks"];
-			ComboBoxAsk.SelectedValue = pairs["ask"];
-			ToggleButtonAutoRun.IsChecked = pairs["autoRun"].ToLower() == "true";
+			Controller controller = Controller.GetInstance();
+			var config = controller.Configurator;
+			TextBoxDays.Text = config.Days.ToString();
+			TextBoxHours.Text = config.Hours.ToString();
+			TextBoxWeeks.Text = config.Weeks.ToString();
+			ComboBoxAsk.SelectedValue = config.AskWords.ToString();
+			ToggleButtonAutoRun.IsChecked = config.AutoRun;
 			bool res = ShowDialog() ?? false;
 			if (res)
 			{
-				pairs["days"] = TextBoxDays.Text;
-				pairs["hours"] = TextBoxHours.Text;
-				pairs["weeks"] = TextBoxWeeks.Text;
-				pairs["ask"] = ComboBoxAsk.SelectedValue.ToString();
-				pairs["autoRun"] = ToggleButtonAutoRun.IsChecked.ToString();
-				RegistryManager registryManager = new RegistryManager();
-				registryManager.SaveSettings(pairs);
+				config.Days = int.Parse(TextBoxDays.Text);
+				config.Hours = int.Parse(TextBoxHours.Text);
+				config.Weeks = int.Parse(TextBoxWeeks.Text);
+				config.AskWords = (AskWordsType)ComboBoxAsk.SelectedValue;
+				config.AutoRun = ToggleButtonAutoRun.IsChecked??false;
+				config.SaveConfig();
 			}
 			return res;
 
