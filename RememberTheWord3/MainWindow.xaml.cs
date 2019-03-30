@@ -25,7 +25,9 @@ namespace RememberTheWord3
 		private Thread thread;
 		public bool IsEdit { get; set; } = false;
 		public Word EditingWord { get; set; }
-		private bool isClosed = false;
+		public SettingsWnd SettingsWnd { get; set; }
+		public WordShowingWnd WordShowingWnd { get; set; }
+		public WordListWnd WordListWnd { get; set; }
 
 		private Controller controller;
 		public MainWindow()
@@ -50,6 +52,7 @@ namespace RememberTheWord3
 
 			//load settings
 			controller = Controller.GetInstance();
+			controller.LoadData();
 			controller.Configurator.GetConfig();
 			//notifyIcon
 			notifyIcon = new System.Windows.Forms.NotifyIcon();
@@ -96,7 +99,12 @@ namespace RememberTheWord3
 				}
 				if (word.WaitSeconds != 0)
 				{
-					Thread.Sleep((int)word.WaitSeconds * 1000);
+					var miliseconds = (double)word.WaitSeconds * 1000;
+					if(miliseconds > Int32.MaxValue)
+					{
+						miliseconds = Int32.MaxValue;
+					}					
+					Thread.Sleep((int)miliseconds);
 				}
 				Dispatcher.Invoke(() =>
 				{
@@ -106,8 +114,8 @@ namespace RememberTheWord3
 
 		}
 		public void WordShow(Word word)
-		{
-			WordShowingWnd wordShowingWindow = new WordShowingWnd();
+		{			
+			WordShowingWnd = new WordShowingWnd();
 			bool showOrigin = true;
 			if (controller.Configurator.AskWords == AskWordsType.Translate)
 			{
@@ -120,17 +128,18 @@ namespace RememberTheWord3
 			}
 			if (showOrigin)
 			{
-				wordShowingWindow.TextBlockWord.Text = word.Origin;
-				wordShowingWindow.TextBlockTranslate.Text = word.Translate;
+				WordShowingWnd.TextBlockWord.Text = word.Origin;
+				WordShowingWnd.TextBlockTranslate.Text = word.Translate;
 			}
 			else
 			{
-				wordShowingWindow.TextBlockWord.Text = word.Translate;
-				wordShowingWindow.TextBlockTranslate.Text = word.Origin;
+				WordShowingWnd.TextBlockWord.Text = word.Translate;
+				WordShowingWnd.TextBlockTranslate.Text = word.Origin;
 			}
-			wordShowingWindow.Top = System.Windows.SystemParameters.WorkArea.Height - wordShowingWindow.Height;
-			wordShowingWindow.Left = System.Windows.SystemParameters.WorkArea.Width - wordShowingWindow.Width;
-			wordShowingWindow.ShowDialog();
+			WordShowingWnd.Top = System.Windows.SystemParameters.WorkArea.Height - WordShowingWnd.Height;
+			WordShowingWnd.Left = System.Windows.SystemParameters.WorkArea.Width - WordShowingWnd.Width;
+			WordShowingWnd.ShowDialog();
+			WordShowingWnd = null;
 			word.TimeShow = DateTime.Now;
 			word.CountShow++;
 			controller.Repository.Update(word);			
@@ -146,34 +155,49 @@ namespace RememberTheWord3
 		private void ButtonList_Click(object sender, RoutedEventArgs e)
 		{
 			Hide();
-			WordListWnd wordsWindow = new WordListWnd();
-			wordsWindow.ParentWindow = this;
-			wordsWindow.Top = System.Windows.SystemParameters.WorkArea.Height - wordsWindow.Height;
-			wordsWindow.Left = System.Windows.SystemParameters.WorkArea.Width - wordsWindow.Width;
-			wordsWindow.ShowDialog();
+			WordListWnd = new WordListWnd();
+			WordListWnd.ParentWindow = this;
+			WordListWnd.Top = System.Windows.SystemParameters.WorkArea.Height - WordListWnd.Height;
+			WordListWnd.Left = System.Windows.SystemParameters.WorkArea.Width - WordListWnd.Width;
+			WordListWnd.ShowDialog();
+			WordListWnd = null;
 			thread?.Abort();
 			task = Task.Run(() => NextWord());
-			//if (!isClosed)
-			//{
-			//	Show();
-			//}
 		}
 
 		private void ButtonSettings_Click(object sender, RoutedEventArgs e)
 		{
 			Hide();
-			SettingsWnd settingsWindow = new SettingsWnd();
-			settingsWindow.Top = System.Windows.SystemParameters.WorkArea.Height - settingsWindow.Height;
-			settingsWindow.Left = System.Windows.SystemParameters.WorkArea.Width - settingsWindow.Width;
-			settingsWindow.ShowDialog();
-			if (!isClosed)
+			SettingsWnd = new SettingsWnd();
+			SettingsWnd.Top = System.Windows.SystemParameters.WorkArea.Height - SettingsWnd.Height;
+			SettingsWnd.Left = System.Windows.SystemParameters.WorkArea.Width - SettingsWnd.Width;
+			SettingsWnd.ShowDialog();
+			SettingsWnd = null;
+		}
+
+		public bool HasWndOpen()
+		{
+			if(SettingsWnd != null)
 			{
-				Show();
+				return true;
 			}
+			else if (WordShowingWnd != null)
+			{
+				return true;
+			}
+			else if(WordListWnd != null)
+			{
+				return true;
+			}
+			return false;
 		}
 
 		private void NotifyIcon_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
 		{
+			if (HasWndOpen())
+			{
+				return;
+			}
 			if (e.Button == System.Windows.Forms.MouseButtons.Right)
 			{
 				contextMenu.IsOpen = true;
@@ -185,12 +209,9 @@ namespace RememberTheWord3
 					Activate();
 				}
 				else
-				{
-					if (!isClosed)
-					{
-						Show();
-						WindowState = WindowState.Normal;
-					}
+				{					
+					Show();
+					WindowState = WindowState.Normal;					
 				}
 			}
 		}
@@ -200,13 +221,12 @@ namespace RememberTheWord3
 		}
 
 		private void MainWindow_Closed(object sender, EventArgs e)
-		{
-			isClosed = true;
+		{			
 			controller.SaveData();
 			notifyIcon?.Dispose();
 		}
 		private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-		{
+		{			
 			thread?.Abort();
 			e.Cancel = true;
 			Hide();

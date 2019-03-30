@@ -32,8 +32,7 @@ namespace RememberTheWord3
 			{
 				MessageBox.Show($"Word ID {word.Id} not found!");
 				return;
-			}
-			//TODO перевірити оновлення даних
+			}			
 			found = word;
 		}
 

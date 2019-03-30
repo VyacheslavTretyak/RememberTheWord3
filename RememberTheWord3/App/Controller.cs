@@ -28,10 +28,9 @@ namespace RememberTheWord3
 			dataFile = new DataFile();
 			Repository = new Repository();
 			Configurator = new Configurator();
-			LoadData();
 		}
 
-		private void LoadData()
+		public void LoadData()
 		{
 			try
 			{
@@ -93,7 +92,7 @@ namespace RememberTheWord3
 			}
 			from = Configurator.Hours;
 			to = Configurator.Days + from;
-			words = words.Where(w => w.CountShow > from && w.CountShow <= to);
+			words = Repository.Words.Where(w => w.CountShow > from && w.CountShow <= to);
 			found = null;
 			foreach (var word in words)
 			{
@@ -110,7 +109,7 @@ namespace RememberTheWord3
 			}
 			from = to;
 			to = Configurator.Weeks + from;
-			words = words.Where(w => w.CountShow > from && w.CountShow <= to);
+			words = Repository.Words.Where(w => w.CountShow > from && w.CountShow <= to);
 			found = null;
 			foreach (var word in words)
 			{
@@ -126,7 +125,7 @@ namespace RememberTheWord3
 				return found;
 			}
 			from = to;
-			words = words.Where(a => a.CountShow > from);
+			words = Repository.Words.Where(a => a.CountShow > from);
 			found = null;
 			foreach (var word in words)
 			{
@@ -145,7 +144,7 @@ namespace RememberTheWord3
 			//Якщо не має що показати зараз, 
 			//шукаємо, що першим показати через певний час
 			to = Configurator.Hours;
-			found = words.Where(w => w.CountShow <= to).OrderBy(w => w.TimeShow).FirstOrDefault();
+			found = Repository.Words.Where(w => w.CountShow <= to).OrderBy(w => w.TimeShow).FirstOrDefault();
 			if (found != null)
 			{				
 				found.WaitSeconds = 60 * 60 - (now - found.TimeShow).TotalSeconds;
@@ -153,7 +152,7 @@ namespace RememberTheWord3
 			}
 			from = to;
 			to = Configurator.Days + from;
-			found = words.Where(w => w.CountShow > from && w.CountShow <= to).OrderBy(w => w.TimeShow).FirstOrDefault();
+			found = Repository.Words.Where(w => w.CountShow > from && w.CountShow <= to).OrderBy(w => w.TimeShow).FirstOrDefault();
 			if (found != null)
 			{				
 				found.WaitSeconds = 60 * 60 * 24 - (now - found.TimeShow).TotalSeconds;
@@ -161,14 +160,14 @@ namespace RememberTheWord3
 			}
 			from = to;
 			to = Configurator.Weeks + from;
-			found = words.Where(w => w.CountShow > from && w.CountShow <= to).OrderBy(w => w.TimeShow).FirstOrDefault();
+			found = Repository.Words.Where(w => w.CountShow > from && w.CountShow <= to).OrderBy(w => w.TimeShow).FirstOrDefault();
 			if (found != null)
 			{				
 				found.WaitSeconds = 60 * 60 * 24 * 7 - (now - found.TimeShow).TotalSeconds;
 				return found;
 			}
 			from = to;
-			found = words.Where(a => a.CountShow > from).OrderBy(a => a.TimeShow).FirstOrDefault();
+			found = Repository.Words.Where(a => a.CountShow > from).OrderBy(a => a.TimeShow).FirstOrDefault();
 			if (found != null)
 			{				
 				found.WaitSeconds = 60 * 60 * 24 * 30 - (now - found.TimeShow).TotalSeconds;
