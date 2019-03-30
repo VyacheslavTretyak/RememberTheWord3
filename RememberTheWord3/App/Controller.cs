@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,14 +25,14 @@ namespace RememberTheWord3
 			return instance;
 		}
 		private Controller()
-		{
-			dataFile = new DataFile();
+		{			
 			Repository = new Repository();
 			Configurator = new Configurator();
 		}
 
 		public void LoadData()
 		{
+			dataFile = new DataFile();
 			try
 			{
 				Repository.Words = dataFile.LoadLastFile();
@@ -43,7 +44,12 @@ namespace RememberTheWord3
 					}
 				}
 			}
-			catch(Exception ex)
+			catch(FileNotFoundException ex)
+			{
+				MessageBox.Show(ex.Message + "\nYou can add new words!");
+				Repository.Words = new List<Word>();
+			}
+			catch (Exception ex)
 			{
 				MessageBox.Show(ex.Message);
 			}

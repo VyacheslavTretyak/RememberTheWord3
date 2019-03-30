@@ -10,16 +10,21 @@ namespace RememberTheWord3
 {
 	class DataFile
 	{
-		//TODO винести властивості в config
-		private string directoryName = "data";
-		private string fileName = "words";
-		private string fileExtension = "wrd";
-		private string formatInFile = "yyyy_MM_dd_HH_mm_ss";
-		private int maxCountFiles = 20;
+		////TODO винести властивості в config
+		//private string directoryName = "data";
+		//private string fileName = "words";
+		//private string fileExtension = "wrd";
+		//private string formatInFile = "yyyy_MM_dd_HH_mm_ss";
+		//private int maxCountFiles = 20;
+		private Configurator configurator;
+		public DataFile()
+		{
+			configurator = Controller.GetInstance().Configurator;
+		}
 
 		public List<Word> LoadLastFile()
 		{
-			FileInfo fi = new FileInfo(directoryName);
+			FileInfo fi = new FileInfo(configurator.DirectoryName);
 			if (!fi.Exists)
 			{
 				Directory.CreateDirectory(fi.FullName);
@@ -28,18 +33,18 @@ namespace RememberTheWord3
 			FileInfo[] files = info.GetFiles();
 			if (files.Length == 0)
 			{
-				throw new Exception("File not found!");
+				throw new FileNotFoundException();
 			}
 			//Looking for newest file
 			FileInfo newestFile = files[0];
 			int index = newestFile.Name.IndexOf("__");
 			string strTime = newestFile.Name.Substring(index + 2, 19);
-			DateTime newest = DateTime.ParseExact(strTime, formatInFile, CultureInfo.InvariantCulture);
+			DateTime newest = DateTime.ParseExact(strTime, configurator.FormatInFile, CultureInfo.InvariantCulture);
 			foreach (FileInfo file in files)
 			{
 				index = file.Name.IndexOf("__");
 				strTime = file.Name.Substring(index + 2, 19);
-				DateTime dateTime = DateTime.ParseExact(strTime, formatInFile,
+				DateTime dateTime = DateTime.ParseExact(strTime, configurator.FormatInFile,
 					CultureInfo.InvariantCulture);
 				if (dateTime > newest)
 				{
@@ -79,7 +84,7 @@ namespace RememberTheWord3
 		public List<Word> RollBack()
 		{
 			System.Windows.Forms.OpenFileDialog fileDialog = new System.Windows.Forms.OpenFileDialog();
-			DirectoryInfo info = new DirectoryInfo(directoryName);
+			DirectoryInfo info = new DirectoryInfo(configurator.DirectoryName);
 			fileDialog.InitialDirectory = info.FullName;
 			if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 			{
@@ -90,8 +95,8 @@ namespace RememberTheWord3
 
 		public void Save(List<Word> words)
 		{
-			string time = DateTime.Now.ToString(formatInFile);
-			string fullpath = $"{directoryName}\\{fileName}__{time}.{fileExtension}";
+			string time = DateTime.Now.ToString(configurator.FormatInFile);
+			string fullpath = $"{configurator.DirectoryName}\\{configurator.FileName}__{time}.{configurator.FileExtension}";
 			using (StreamWriter streamWriter = new StreamWriter(fullpath))
 			{
 				foreach (var row in words)
@@ -99,21 +104,21 @@ namespace RememberTheWord3
 					streamWriter.WriteLine(row.ToLine());
 				}
 			}
-			FileInfo fi = new FileInfo(directoryName);
+			FileInfo fi = new FileInfo(configurator.DirectoryName);
 			DirectoryInfo info = new DirectoryInfo(fi.FullName);
 			FileInfo[] files = info.GetFiles();
-			while (files.Length > maxCountFiles)
+			while (files.Length > configurator.MaxCountFiles)
 			{
 				FileInfo latestFile = files[0];
 				int index = latestFile.Name.IndexOf("__");
 				string strTime = latestFile.Name.Substring(index + 2, 19);
-				DateTime latest = DateTime.ParseExact(strTime, formatInFile, CultureInfo.InvariantCulture);
+				DateTime latest = DateTime.ParseExact(strTime, configurator.FormatInFile, CultureInfo.InvariantCulture);
 
 				foreach (FileInfo file in files)
 				{
 					index = file.Name.IndexOf("__");
 					strTime = file.Name.Substring(index + 2, 19);
-					DateTime dateTime = DateTime.ParseExact(strTime, formatInFile, CultureInfo.InvariantCulture);
+					DateTime dateTime = DateTime.ParseExact(strTime, configurator.FormatInFile, CultureInfo.InvariantCulture);
 					if (dateTime < latest)
 					{
 						latestFile = file;

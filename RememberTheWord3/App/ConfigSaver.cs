@@ -49,11 +49,16 @@ namespace RememberTheWord3
 
 		private void SetDefaultConfig()
 		{
-			config["hours"] = "12";
-			config["days"] = "7";
-			config["weeks"] = "4";
+			config["hours"] = "8";
+			config["days"] = "10";
+			config["weeks"] = "6";
 			config["ask"] = "2";
 			config["autorun"] = "1";
+			config["directoryName"] = "data";
+			config["fileName"] = "words";
+			config["fileExtension"] = "wrd";
+			config["formatInFile"] = "yyyy_MM_dd_HH_mm_ss";
+			config["maxCountFiles"] = 20.ToString();
 		}
 
 		public void SaveConfig()

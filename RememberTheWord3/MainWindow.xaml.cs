@@ -52,8 +52,9 @@ namespace RememberTheWord3
 
 			//load settings
 			controller = Controller.GetInstance();
-			controller.LoadData();
 			controller.Configurator.GetConfig();
+			controller.LoadData();			
+			
 			//notifyIcon
 			notifyIcon = new System.Windows.Forms.NotifyIcon();
 			notifyIcon.Visible = true;

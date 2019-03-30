@@ -14,12 +14,17 @@ namespace RememberTheWord3
 		public int Days { get; set; }
 		public int Weeks { get; set; }
 		public bool AutoRun { get; set; }
+		public string DirectoryName { get; set; }
+		public string FileName { get; set; }
+		public string FileExtension { get; set; } 
+		public string FormatInFile { get; set; } 
+		public int MaxCountFiles { get; set; } 
 		private string appName = "RememberTheWord3";
 		private ConfigSaver saver;
 		public Configurator()
 		{
 			saver = new ConfigSaver();
-			saver.LoadConfig();
+			saver.LoadConfig();			
 		}
 
 		public void SaveConfig()
@@ -34,6 +39,11 @@ namespace RememberTheWord3
 			Days= int.Parse(config["days"]);
 			Weeks = int.Parse(config["weeks"]);
 			AutoRun = config["autorun"] == "1";
+			DirectoryName = config["directoryName"];
+			FileName = config["fileName"];
+			FileExtension = config["fileExtension"];
+			FormatInFile = config["formatInFile"];
+			MaxCountFiles = int.Parse(config["maxCountFiles"]);
 			AskWords = (AskWordsType)int.Parse(config["ask"]);
 			if (AutoRun)
 			{
