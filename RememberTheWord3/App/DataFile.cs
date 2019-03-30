@@ -9,13 +9,7 @@ using System.Threading.Tasks;
 namespace RememberTheWord3
 {
 	class DataFile
-	{
-		////TODO винести властивості в config
-		//private string directoryName = "data";
-		//private string fileName = "words";
-		//private string fileExtension = "wrd";
-		//private string formatInFile = "yyyy_MM_dd_HH_mm_ss";
-		//private int maxCountFiles = 20;
+	{		
 		private Configurator configurator;
 		public DataFile()
 		{

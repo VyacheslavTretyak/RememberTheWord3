@@ -17,8 +17,7 @@ using System.Windows.Shapes;
 namespace RememberTheWord3
 {
 	public partial class MainWindow : Window
-	{
-		//TODO About
+	{		
 		private System.Windows.Forms.NotifyIcon notifyIcon;
 		private ContextMenu contextMenu;		
 		private Task task;

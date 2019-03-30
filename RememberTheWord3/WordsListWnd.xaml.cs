@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -46,13 +47,21 @@ namespace RememberTheWord3
 			contextMenu.Items.Add(item);
 
 			DataGridWords.ContextMenu = contextMenu;
+			TBOriginalSearch.TextChanged += Search_TextChanged;
+			TBTranslateSearch.TextChanged += Search_TextChanged;
+
+		}
+
+		private void Search_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			GetList();
 		}
 
 		private void ItemShow_Click(object sender, RoutedEventArgs e)
 		{
 			int id = GetSelectedId();
 			Word nextWord = Task<Word>.Run(() => controller.Repository.Get(id)).Result;
-			
+
 			ParentWindow.WordShow(nextWord);
 			GetList();
 		}
@@ -63,12 +72,12 @@ namespace RememberTheWord3
 		}
 
 		private void ItemEdit_Click(object sender, RoutedEventArgs e)
-		{			
+		{
 			Word selectedWord = controller.Repository.Get(GetSelectedId());
 			ParentWindow.TextBoxWord.Text = selectedWord.Origin;
 			ParentWindow.TextBoxTranslate.Text = selectedWord.Translate;
 			ParentWindow.IsEdit = true;
-			ParentWindow.EditingWord = selectedWord;			
+			ParentWindow.EditingWord = selectedWord;
 			Close();
 		}
 
@@ -90,12 +99,29 @@ namespace RememberTheWord3
 			DataGridWords.ItemsSource = null;
 			Task.Run(() =>
 			{
-				var list = controller.Repository.Words;
+				IEnumerable<Word> list = null;
+				string origin = "";
+				string translate = "";
 				Dispatcher.Invoke(() =>
 				{
-					DataGridWords.ItemsSource = list.Select(a => new { a.Origin, a.Translate, a.CountShow, a.TimeShow, a.TimeCreate, a.Id});
+					origin = TBOriginalSearch.Text.ToLower();
+					translate = TBTranslateSearch.Text.ToLower();
 				});
-			});
+				
+				if (origin == "" && translate == "")
+				{
+					list = controller.Repository.Words;
+				}
+				else
+				{
+					list = controller.Repository.Words.Where(w => w.Origin.ToLower().Contains(origin)).Where(w => w.Translate.ToLower().Contains(translate));
+					
+				}
+				Dispatcher.Invoke(() =>
+				{
+					DataGridWords.ItemsSource = list.Select(a => new { a.Origin, a.Translate, a.CountShow, a.TimeShow, a.TimeCreate, a.Id });
+				});
+			});			
 		}
 	}
 }

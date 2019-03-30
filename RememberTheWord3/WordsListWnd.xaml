@@ -14,7 +14,23 @@
 		Title="Remember The Words" Height="400" Width="550" MinHeight="400" MinWidth="500"
 		 Icon="icon1.ico">
 	<Grid>
-		<DataGrid
+		<Grid.RowDefinitions>
+			<RowDefinition Height="30"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+		<StackPanel Orientation="Horizontal">
+			<TextBox 
+				Name ="TBOriginalSearch"
+				Margin="20 0"
+				Width="200"
+				materialDesign:HintAssist.Hint="original search"></TextBox>
+			<TextBox 
+				Name ="TBTranslateSearch"
+				Margin="20 0" 
+				Width="200"
+				materialDesign:HintAssist.Hint="translate search"></TextBox>			
+		</StackPanel>
+		<DataGrid Grid.Row="1"
 			  Margin="0 8 0 0"
 			  Name="DataGridWords"
 			  CanUserSortColumns="True"
