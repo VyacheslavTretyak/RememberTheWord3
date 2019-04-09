@@ -22,6 +22,7 @@ namespace RememberTheWord3
 
 		public void Add(Word word)
 		{
+			word.Id = LastId() + 1;
 			Words.Add(word);
 		}
 

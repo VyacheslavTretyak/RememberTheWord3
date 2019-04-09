@@ -81,6 +81,7 @@ namespace RememberTheWord3
 			DateTime now = DateTime.Now;
 			int to = Configurator.Hours;			
 			int from = 0;
+			//Шукаємо слова, які маємо показувати кожну годину
 			var words = Repository.Words.Where(a => a.CountShow <= to);
 			Word found = null;
 			foreach (var word in words)
@@ -98,6 +99,7 @@ namespace RememberTheWord3
 			}
 			from = Configurator.Hours;
 			to = Configurator.Days + from;
+			//Шукаємо слова, які маємо показувати кожен день
 			words = Repository.Words.Where(w => w.CountShow > from && w.CountShow <= to);
 			found = null;
 			foreach (var word in words)
@@ -115,6 +117,7 @@ namespace RememberTheWord3
 			}
 			from = to;
 			to = Configurator.Weeks + from;
+			//Шукаємо слова, які маємо показувати кожен тиждень
 			words = Repository.Words.Where(w => w.CountShow > from && w.CountShow <= to);
 			found = null;
 			foreach (var word in words)
@@ -131,6 +134,7 @@ namespace RememberTheWord3
 				return found;
 			}
 			from = to;
+			//Шукаємо слова, які маємо показувати кожен місяць
 			words = Repository.Words.Where(a => a.CountShow > from);
 			found = null;
 			foreach (var word in words)

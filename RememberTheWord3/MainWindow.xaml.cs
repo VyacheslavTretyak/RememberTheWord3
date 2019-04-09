@@ -142,6 +142,7 @@ namespace RememberTheWord3
 			WordShowingWnd = null;
 			word.TimeShow = DateTime.Now;
 			word.CountShow++;
+			word.WaitSeconds = 0;
 			controller.Repository.Update(word);			
 		}
 
